@@ -8,32 +8,48 @@ namespace XMLApp
 {
     public class StudentService : IStudentService
     {
-        List<StudentModel> students;
-        XMLManager manager;
        
-        public StudentService()
+        private readonly IXMLManager<StudentModel> _studentManager;
+        private readonly IXMLManager<TeacherModel> _teacherManager;
+
+
+        public StudentService(IXMLManager<StudentModel> studentManager, IXMLManager<TeacherModel> teacherManager )
         {
-            students = new List<StudentModel>();
-            manager = new XMLManager();
+
+            _studentManager = studentManager;
+            _teacherManager = teacherManager;
+
+            
         }
         public void Add(StudentModel student)
         {
-            List<StudentModel> _students = students;
+            List<StudentModel> students = new List<StudentModel>();
+            
+            try
+            {
+                students= _studentManager.Read(); ;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
             students.Add(student);
+
+            _studentManager.Insert(students);
            
-            manager.Insert(_students);
            
         }
 
         public void Delete(int id)
         {
-            List<StudentModel> _students = students;
-            foreach (var student in _students)
+            List<StudentModel> students = _studentManager.Read();
+            foreach (var student in students)
             {
                 if (student.Id==id)
                 {
-                    _students.Remove(student);
-                    manager.Delete(_students);
+                    students.Remove(student);
+                    _studentManager.Update(students);
                     break;
                 }
             }
@@ -41,38 +57,35 @@ namespace XMLApp
 
         public StudentModel Get(int id)
         {
-            StudentModel studentModel=null;
-            List<StudentModel> students = manager.Read();
+            List<StudentModel> students = _studentManager.Read();
             foreach (var student in students)
             {
                 if (student.Id==id)
                 {
-                    studentModel = student;
-                    return studentModel;
+                    return student;
                 }
             }
-            return studentModel;
+            return null;
         }
 
         public List<StudentModel> GetAll()
         {
-            return manager.Read();
+            return _studentManager.Read();
         }
-
         public void Update(StudentModel student)
         {
-            StudentModel wrongStudent = null;
+            List<StudentModel> students = _studentManager.Read();
+            int index = -1;
             for (int i = 0; i < students.Count; i++)
             {
                 if (students[i].Id == student.Id)
                 {
-                    wrongStudent = students[i];
+                    index = i;
                     break;
                 }
             }
-            int wrongStudentidx = students.IndexOf(wrongStudent);
-            students[wrongStudentidx] = student;
-            manager.Update(students);
+            students[index] = student;
+            _studentManager.Update(students);
         }
     }
 }

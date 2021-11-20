@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace XMLApp
 {
-    public interface IXMLManager
+    public interface IXMLManager<T> where T:class
     {
-        void Insert(List<StudentModel> students);
-        void Update(List<StudentModel> students);
-        List<StudentModel> Read();
-        void Delete(List<StudentModel> students);
+        void Insert(List<T> source);
+        void Update(List<T> source);
+        List<T> Read();
     }
 }

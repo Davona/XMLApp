@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 namespace XMLApp
 {
     [Serializable]
-    public class StudentModel
+   public  class TeacherModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
-        public TeacherModel Teacher { get; set; }
-        public StudentModel()
+        public List<StudentModel> Students { get; set; }
+        public TeacherModel()
         {
 
         }
-        public StudentModel(int id,string name,int age)
+        public TeacherModel(int id,string name,int age)
         {
             Id = id;
             Name = name;
             Age = age;
         }
-       
+
     }
 }

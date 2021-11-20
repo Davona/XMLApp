@@ -44,11 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IStudentService.cs" />
+    <Compile Include="ITeacherService.cs" />
     <Compile Include="IXMLManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StudentModel.cs" />
     <Compile Include="StudentService.cs" />
+    <Compile Include="TeacherModel.cs" />
+    <Compile Include="TeacherService.cs" />
     <Compile Include="XMLManager.cs" />
   </ItemGroup>
   <ItemGroup>

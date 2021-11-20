@@ -8,44 +8,43 @@ using System.Xml.Serialization;
 
 namespace XMLApp
 {
-    public class XMLManager : IXMLManager
+    public class XMLManager<T>:IXMLManager<T> where T:class
     {
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<StudentModel>));
-        public void Insert(List<StudentModel> student)
+        private readonly XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<T>));
+        private readonly string _path;
+        public XMLManager(string path)
         {
-            using (FileStream fs = new FileStream("students.xml", FileMode.OpenOrCreate))
+            _path = path;
+            
+        }
+        public void Insert(List<T> source)
+        {
+            using (FileStream fs = new FileStream(_path, FileMode.OpenOrCreate))
             {
-                xmlSerializer.Serialize(fs, student);
+                xmlSerializer.Serialize(fs, source);
             }
         }
 
-        public List<StudentModel> Read()
+        public List<T> Read()
         {
-            using (FileStream fs = new FileStream("students.xml", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(_path, FileMode.OpenOrCreate))
             {
-                List<StudentModel> students = (List<StudentModel>)xmlSerializer.Deserialize(fs);
+                List<T> students = (List<T>)xmlSerializer.Deserialize(fs);
 
                 return students;
             }
         }
       
 
-        public void Update(List<StudentModel> students)
+        public void Update(List<T> source)
         {
-            using (StreamWriter wr = new StreamWriter("students.xml"))
+            using (StreamWriter wr = new StreamWriter(_path))
             {
 
-                xmlSerializer.Serialize(wr, students);
+                xmlSerializer.Serialize(wr, source);
             }
         }
-        public void Delete( List<StudentModel> students)
-        {
-            using (StreamWriter wr = new StreamWriter("students.xml"))
-            {
-               
-                xmlSerializer.Serialize(wr, students);
-            }
-        }
+      
 
 
     }
