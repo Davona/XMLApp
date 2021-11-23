@@ -8,37 +8,54 @@ namespace XMLApp
 {
     public class StudentService : IStudentService
     {
-       
+
         private readonly IXMLManager<StudentModel> _studentManager;
         private readonly IXMLManager<TeacherModel> _teacherManager;
 
 
-        public StudentService(IXMLManager<StudentModel> studentManager, IXMLManager<TeacherModel> teacherManager )
+        public StudentService(IXMLManager<StudentModel> studentManager, IXMLManager<TeacherModel> teacherManager)
         {
 
             _studentManager = studentManager;
             _teacherManager = teacherManager;
 
-            
+
         }
         public void Add(StudentModel student)
         {
             List<StudentModel> students = new List<StudentModel>();
-            
+
             try
             {
-                students= _studentManager.Read(); ;
+                students = _studentManager.Read(); ;
             }
             catch (Exception ex)
             {
 
             }
 
-            students.Add(student);
 
-            _studentManager.Insert(students);
+            List<TeacherModel> teachers = _teacherManager.Read();
+            int count = 0;
+            for (int i = 0; i < teachers.Count; i++)
+            {
+                if (student.Teacher.Id == teachers[i].Id)
+                {
+                    count++;
+                   
+                }
+            }
+            if (count!=0)
+            {
+                students.Add(student);
+                _studentManager.Insert(students);
+            }
+            else
+            {
+                throw new Exception("The teacher is not on the list");
+            }
            
-           
+
         }
 
         public void Delete(int id)
@@ -46,7 +63,7 @@ namespace XMLApp
             List<StudentModel> students = _studentManager.Read();
             foreach (var student in students)
             {
-                if (student.Id==id)
+                if (student.Id == id)
                 {
                     students.Remove(student);
                     _studentManager.Update(students);
@@ -60,7 +77,7 @@ namespace XMLApp
             List<StudentModel> students = _studentManager.Read();
             foreach (var student in students)
             {
-                if (student.Id==id)
+                if (student.Id == id)
                 {
                     return student;
                 }
@@ -75,17 +92,33 @@ namespace XMLApp
         public void Update(StudentModel student)
         {
             List<StudentModel> students = _studentManager.Read();
-            int index = -1;
-            for (int i = 0; i < students.Count; i++)
+            List<TeacherModel> teachers = _teacherManager.Read();
+            int index = 0;
+            int count = 0;
+            for (int i = 0; i < teachers.Count; i++)
             {
-                if (students[i].Id == student.Id)
+                if (student.Teacher.Id==teachers[i].Id)
                 {
-                    index = i;
-                    break;
+                    for (int j = 0; j < students.Count; j++)
+                    {
+                        if (students[j].Id == student.Id)
+                        {
+                            index = j;
+                            break;
+                        }
+                    }
+                    count++;
                 }
             }
-            students[index] = student;
-            _studentManager.Update(students);
+            if (count!=0)
+            {
+                students[index] = student;
+                _studentManager.Update(students);
+            }
+            else
+            {
+                throw new Exception("The teacher is not on the list");
+            }
         }
     }
 }

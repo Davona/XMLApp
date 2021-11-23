@@ -11,25 +11,37 @@ namespace XMLApp
     {
         static void Main(string[] args)
         {
-            StudentService studentService = new StudentService(new XMLManager<StudentModel>("students.xml"),new XMLManager<TeacherModel>("teachers.xml"));
-            StudentModel st = new StudentModel(1, "Anna", 21);
-            st.Teacher = new TeacherModel(21, "sfas", 13);
-            studentService.Add(st);
-            studentService.Add(new StudentModel(3, "Ashot", 23));
-            studentService.Add(new StudentModel(4, "Misak", 29));
-            studentService.Add(new StudentModel(5, "Movses", 19));
-            studentService.Add(new StudentModel(6, "Vaspur", 27));
-            List<StudentModel> vs= studentService.GetAll();
-            StudentModel student = studentService.Get(3);
-            studentService.Delete(5);
-            studentService.Delete(4);
-            List<StudentModel> studentModels = studentService.GetAll();
-            studentService.Update(new StudentModel(6, "Gayane", 26));
+            TeacherService teacherService = new TeacherService(new XMLManager<TeacherModel>("teachers.xml"), new XMLManager<StudentModel>("students.xml"));
+            StudentService studentService = new StudentService(new XMLManager<StudentModel>("students.xml"), new XMLManager<TeacherModel>("teachers.xml"));
+            TeacherModel teacher1 = new TeacherModel(1, "Anna", 35);
+            TeacherModel teacher2 = new TeacherModel(2, "Ashot", 50);
+            TeacherModel teacher3 = new TeacherModel(3, "Ani", 41);
+            teacherService.Add(teacher1);
+            teacherService.Add(teacher2);
+            teacherService.Add(teacher3);
+            StudentModel student1 = new StudentModel(1, "Aram", 19);
+            StudentModel student2 = new StudentModel(2, "Armen", 25);
+            StudentModel student3 = new StudentModel(3, "Davit", 17);
+            StudentModel student4 = new StudentModel(4, "Saten", 16);
+            StudentModel student5 = new StudentModel(5, "Sona", 24);
+            student1.Teacher = teacher1;
+            studentService.Add(student1);
+            student2.Teacher = teacher3;
+            studentService.Add(student2);
+            student3.Teacher = teacher1;
+            studentService.Add(student3);
+            student4.Teacher = teacher2;
+            studentService.Add(student4);
+            student5.Teacher = teacher3;
+            studentService.Add(student5);
             List<StudentModel> students = studentService.GetAll();
-            TeacherService teacherService = new TeacherService(new XMLManager<TeacherModel>("teachers.xml"));
-            teacherService.Add(new TeacherModel(1, "Anna", 25));
-            teacherService.Add(new TeacherModel(2, "Ani", 45));
-            teacherService.Add(new TeacherModel(3, "Aram", 32));
+            teacher1.Students = students;
+            teacherService.Update(teacher1);
+
+           
+           
+           
+            
 
         }
     }

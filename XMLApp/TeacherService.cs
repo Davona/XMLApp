@@ -9,9 +9,11 @@ namespace XMLApp
     public class TeacherService : ITeacherService
     {
         private readonly IXMLManager<TeacherModel> _teacherManager;
-        public TeacherService(IXMLManager<TeacherModel> teacherManager )
+        private readonly IXMLManager<StudentModel> _studentManager;
+        public TeacherService(IXMLManager<TeacherModel> teacherManager, IXMLManager<StudentModel> studentManager )
         {
             _teacherManager = teacherManager;
+            _studentManager = studentManager;
         }
         public void Add(TeacherModel teacher)
         {
@@ -69,18 +71,51 @@ namespace XMLApp
         public void Update(TeacherModel teacher)
         {
             List<TeacherModel> teachers = _teacherManager.Read();
-            int index=-1;
-            for (int i = 0; i < teachers.Count; i++)
+            List<StudentModel> students = _studentManager.Read();
+            if (teacher.Students!=null)
             {
-                if (teachers[i].Id == teacher.Id)
+                int count = 0;
+                int index = 0;
+                for (int i = 0; i < students.Count; i++)
                 {
-                    index = i;
-                    break;
+                    if (teacher.Students[i].Id==students[i].Id)
+                    {
+                        for (int j = 0; j < teachers.Count; j++)
+                        {
+                            if (teachers[j].Id == teacher.Id)
+                            {
+                                index = j;
+                                break;
+                            }
+                        }
+                        count++;
+                    }
+                    if (count!=0)
+                    {
+                        teachers[index] = teacher;
+                        _teacherManager.Update(teachers);
+                    }
+                    else
+                    {
+                        throw new Exception(" Student is not on the list");
+                    }
                 }
             }
+            else
+            {
+                int index = 0;
+                for (int i = 0; i < teachers.Count; i++)
+                {
+                    if (teachers[i].Id == teacher.Id)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
 
-            teachers[index] = teacher;
-            _teacherManager.Update(teachers);
+                teachers[index] = teacher;
+                _teacherManager.Update(teachers);
+            }
         }
     }
 }
